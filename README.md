@@ -1,4 +1,4 @@
-# ruby_multisite
+# rails_multisite
 
 ## Description
 
