@@ -24,6 +24,15 @@ Alternatively, you can have the `config/multisite.yml` file present, but disable
 federation:false
 ```
 
+Alternatively, you can have different configs for each runtime environment:
+
+```YAML
+development: 
+  federation:false
+production: 
+  ...
+```
+
 #### Active via YAML
 
 This is the simplist (but most limiting) mode of operation.
