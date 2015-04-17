@@ -12,11 +12,11 @@ This plugin has 3 modes of operation:
 
 1. Present but inactive
 2. Active via YAML
-3. Active via federation database 
+3. Active via Federation Database 
 
 #### Present but inactive
 
-This plugin will detect the absence of a config file (`config/multisite.yml`) and then switch into inactive mode. It will not modify your application memory space. This is for backwards compat.
+This plugin will detect the absence of a config file (`config/multisite.yml`) and then switch into inactive mode. It will not modify your application memory space.
 
 Alternatively, you can have the `config/multisite.yml` file present, but disable it via:
 
@@ -24,42 +24,29 @@ Alternatively, you can have the `config/multisite.yml` file present, but disable
 federation: false
 ```
 
-Alternatively, you can have different configs for each runtime environment:
-
-```YAML
-development: 
-  federation: false
-production: 
-  ...
-```
-
-Alternatively, you can have default configs in the global space.
-
-```YAML
-federation: false   # Default to disabled
-production:         
-  ...               # but turn it on for production
-```
-
 #### Active via YAML
 
-This is the simplist (but most limiting) mode of operation.
+This is the simplist *(but most limiting)* mode of operation.
 
-The config file (multisite.yml) lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
-
-*(Standard default-scoping rules apply. You can override these values for each runtime environment.)*
+The config file `config/multisite.yml` lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
 
 **multisite.yml:**
 ```yaml
 federation: true           # Enabled with all values defaulted as much as possible. 
+
+
+defaults:                  # These defaults are shared among all sites. The site can declare values to override these values.
+                           # Each of these values defaults to `config/database.yml` if not present.
+  adapter: postgresql      
+  host: 123.123.123.123    
+  username: SOME_USERNAME  
+  password: SOME_PASSWORD  
+  database: smyers_net     
+  pool: 10                 # If not found anywhere, defaults to 25.
+  timeout: 1000            # If not found anywhere, defaults to 5000.
 smyers.net:                # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
-  adapter: postgresql      # Defaults to the matching `config/database.yml` value
-  host: 123.123.123.123    # Defaults to the matching `config/database.yml` value
-  username: SOME_USERNAME  # Defaults to the matching `config/database.yml` value
-  password: SOME_PASSWORD  # Defaults to the matching `config/database.yml` value
-  database: smyers_net     # Defaults to the matching `config/database.yml` value
-  pool: 25                 # Defaults to the matching `config/database.yml` value (then default to 25)
-  timeout: 5000            # Defaults to the matching `config/database.yml` value (then defaults to 5000)
+  # All properties can be placed here to override default values.
+  # Order of lookup: this -> 'config/multisite.yml|defaults' -> 'config/
   host_names:              # Required. Names must be unique across all active database configs.
     - smyers.net
     - michael.smyers.net
