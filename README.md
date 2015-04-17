@@ -59,17 +59,43 @@ multisite: true
 # Each of these properties have defaults if not present. 
 # These defaults are for each site that your runtime supports.
 site_defaults:
-  # The sql adapter to use
-  # default 1: to whatever you have set in `config/database.yml` (final default: 'postgresql')
+  #
+  # The sql adapter to use. Has some fancy defaults.
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: 'postgresql'
   adapter: postgresql      
-  host: 123.123.123.123    # defaults to whatever you have set in `config/database.yml`
+  # 
+  # Where to find your database.
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: localhost
+  host: 123.123.123.123 
+  #
+  # The username for the database
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: 'webapp' 
   username: SOME_USERNAME
+  #
+  # The password for the database
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: 'password'
   password: SOME_PASSWORD
+  #
+  # The database name inside your running postgresql instance.
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: ---- CRASH ---- 
   database: smyers_net
-  pool: 10                 # If not found anywhere, defaults to 25.
-  timeout: 1000            # If not found anywhere, defaults to 5000.
+  #
+  # How many connections to put in the connection cache.
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: 10
+  pool: 10
+  #
+  # How long to wait for a database connection before crashing.
+  # default 1: Whatever you have set in `config/database.yml`
+  # default 2: 5000
+  timeout: 1000
 #
-# This is a site name.
+# This is a site name. It's just for you. The Gem doesn't use this name for anything.
 # It must be unique, but this value is for your readability. The computer doesn't care. 
 # Though I recommend against calling it 'blaabittyblah' or 'a' since you'll want to remember what it is for.
 smyers.net:
@@ -80,6 +106,7 @@ smyers.net:
   # All entries in this list will resolve to exactly the same properties (no more configuration options past this point)
   host_names:              
     - smyers.net
+  # - smyers.net           # This would be invalid and your app would crash since it would be a dupe.
     - michael.smyers.net
 coursescheduler.com:
   #
@@ -90,7 +117,7 @@ coursescheduler.com:
   host_names:
     - courseschduler.net
     - courseschduler.com
-  # - smyers.net           # This would be invalid and your app would crash.
+  # - smyers.net           # This would be invalid and your app would crash since it would be a dupe.
 ```
 
 #### Active via federation database (sql)
