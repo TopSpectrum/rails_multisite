@@ -24,6 +24,7 @@ This is the simplist (but most limiting) mode of operation.
 
 The config file (multisite.yml) lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
 
+**multisite.yml:**
 ```yaml
 smyers.net:
   db_id: 1 # must be unique across all sites
@@ -55,14 +56,27 @@ coursescheduler.com:
 
 The config file (multisite.yml) is still present, but it contains the site name of `default`. At time of writing, all other entries will be ignored if the `default` entry is present.
 
+**multisite.yml:**
 ```yaml
-default:
-  db_id: 1 # must be unique across all sites
-  adapter: postgresql
-  host: 123.123.123.123
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
-  database: smyers_net
-  pool: 25
-  timeout: 5000
+federation:true # Tells the app to use `database.yml` as federation data, not actual data.
 ```
+
+##### How does this work?
+
+The federation database contains a master record of where things are located. So instead of defining your sites in the yml file, you define them in the database. 
+
+We use `config/database.yml` to figure out where your federation data is located. 
+
+The required database schema is the same structure as the field table above.
+
+
+###### Required Database Layout (federation database)
+
+Column Name   | Column Type  | Allow Null | Default Value  | Notes                                   |
+------------- | ------------ | ---------- | -------------- | --------------------------------------- |
+id            | Number       |      N     | Auto Number    | 
+host          | String       |      Y     | `database.yml` | 
+username      | String       |      Y     | `database.yml` | 
+password      | String       |      Y     | `database.yml` | 
+pool          | Number       |      Y     | 25             | Number of connections to keep active
+timeout       | Number       |      Y     | 5000           | Amount of time to wait for a connection before giving up
