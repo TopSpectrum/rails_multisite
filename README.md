@@ -96,10 +96,10 @@ CREATE TABLE `federation`.`federation_sites`
 
 CREATE TABLE `federation`.`federation_host_names`
 (
-  `federation_side_id`  BIGINT NOT NULL, 
-  `host_name`           VARCHAR(255),           
+  `federation_site_id`  BIGINT NOT NULL,      -- The id of the parent (federation.federation_sites) 
+  `host_name`           VARCHAR(255),         -- The hostname that rails sees (ex: smyers.net)
   
-  PRIMARY KEY(`host_name`)
+  PRIMARY KEY(`host_name`)                    -- This is the primary entry point to this dataset.
 );
 CREATE INDEX idx_federation__federation_host_names ON federation_host_names(federation_side_id);
 ```
