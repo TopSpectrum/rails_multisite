@@ -87,20 +87,34 @@ The `config/multisite.yml` file is still present, but it contains the site name 
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
 #     The configuration is contained inside the 'federation' key.
-#     Setting this key to a value of 'federation' will enable the plugin in YAML mode.
-multisite: 'federation'   # Tells the app to use `database.yml` as federation data, not actual data.
+#     Setting this key to a value of 'federation' will enable the plugin in FEDERATION mode.
+#     Tells the app to use `database.yml` as federation data, instead of using it as a real database for your domain data.
+multisite: 'federation'   
+#
+# Since we're in federation mode, the federation settings are in the `federation` key
+#
+federation:
+  #
+  # 
+  # If we can't find the host_name in the database, do you want to:
+  #    A) ACCEPT - Fall back to the values in the `defaults` section. (set it to `defaults`)
+  #    B) REJECT - Throw an error. (set it to `fail` or false)
+  #    C) DEFAULT - If you don't care, just leave the key out of this file. It defaults to `defaults` (naturally).
+  host_name_not_found_action: 'defaults' 
+
+...
 ```
 
 ##### How does this work?
 
-The federation database contains a master record of where things are located. So instead of defining your sites in the `config/multisite.yml` file, you define them in the `federation.federation_databases` database. 
+The federation database contains a master record of where things are located. So instead of defining your host_names in the `config/multisite.yml` file, you define them in the `federation.federation_databases` database. 
 
-We use `config/database.yml` as the database for your federation data. So you should put your `federation` database info into `config/database.yml` and put your *'regular database connection info'* as rows in your federation database.
+We use `config/database.yml` as the database for your federation data. So you should put your *'federation database info'* into `config/database.yml` and put your *'regular database connection info'* as rows in your federation database.
 
 ###### Required Database Layout (federation database)
 
 ```sql
--- The database name of `federation` is configured in your `config/database.yml` file
+-- The database name of `federation` is configured in your `config/database.yml` file. You could change it if you wanted.
 
 CREATE TABLE `federation`.`federation_databases`
 (
@@ -129,7 +143,7 @@ CREATE TABLE `federation`.`federation_host_names`
 );
 ```
 
-###### What's the fetch logic? (SQL Mode)
+###### Walk me through the fetch logic for `Federation Mode`.
 
 1. Someone comes to the site at `http://www.smyers.net/something/fancy` *(This is the first time that this site has been fetched.)*
 2. We execute this SQL *(with `host_name = www.smyers.net`)*
@@ -138,9 +152,10 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
   INNER JOIN federation_host_names ON federation_databases.id = federation_host_names.federation_database_id
   WHERE host_name = ?
 ```
-3. If it returns `zero` results, we check the `config/multisite.yml|federation.use_default_on_miss` flag. If that's `true` then we *'keep going'* with the `default federation database` active in `ActiveRecord`. If that's `false` then we fail with `"some exception"`.
+3. If it returns `zero` results, we check the `config/multisite.yml|federation.host_name_not_found_action` flag. If that's `defaults` then we *'keep going'* and set the `default federation database` for use with `ActiveRecord` for this request. If that's `false` or `fail` then we fail with `"some exception"`.
 4. If it returns `one` result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
 5. We allow for fallback, so `database` = defaultString(try_first: `federation_host_names.database`, try_last: `federation_databases.database`)
+6. It's not possible to return more than one result, because the host_name is unique.
 
 ### Advanced config options
 
