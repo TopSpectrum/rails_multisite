@@ -43,8 +43,6 @@ This is the simplist *(but most limiting)* mode of operation.
 
 The config file `config/multisite.yml` lists the hosts that your runtime supports and their database information. This information is defined at boot time and is immutable. To change the information in the YAML file, you must edit the file and restart the app. For large scale apps, this behavior is not desirable.
 
-**WARNING:** *YAML data has precendence over SQL data. So if there's the same (but slightly different) data in YAML than SQL, then YAML wins. It's an all or nothing thing. We don't query SQL at all if it's in YAML. You've been warned!*
-
 **To start the magic** set the `multisite` variable to `true` *(magic not guaranteed)*
 
 ```yaml
@@ -120,30 +118,65 @@ coursescheduler.com:
   # - smyers.net           # This would be invalid and your app would crash since it would be a dupe.
 ```
 
-#### Active via federation database (sql)
+#### Active via YAML and SQL.
 
-Enable sql federation by setting `multisite: 'sql'` in `config/multisite.yml`
+If a lookup fails an in-memory call, we determine the next step. Here's the logic breakdown:
+
+1. Customer accesses site via **http://www.smyers.net/is/awesome?verified=true** *(for example)*
+2. This Gem intercepts the call and looks up *some_host_name* in the in-memory hash that was populated by YAML.
+3. It's not found. Bummer.
+4. We check the fallback strategy for what to do next.
+5. Turns out the next step is 'remote' *(aka: the federation database)* 
+6. Connect to the *federation database* and look up *some_host_name*
+7. **Branch 1:** Gets back data. Boom. Carry on.
+8. **Branch 2:** Gets back no data. Damn. Go to next fallback strategy.
+
+**How do you take advantage of it? You have to replace the `multisite: true` with an expanded config set.
 
 ```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
-#     The configuration is contained inside the optional 'federation' key.
-#     Setting this key to a value of 'sql' will enable the plugin in FEDERATION mode.
-#     Tells the app to use `database.yml` as a federation data source, instead of using it as a real database for your domain data.
-multisite: 'sql'   
+#     This content demonstrates how to setup SQL-fallback for federation lookup.
 #
-# Since we're in federation mode, the federation settings are in the `federation` key. This key is optional.
-# Default values are indicated as appropriate.
 #
-federation:
+# The multisite key is not `false` or null, so it's enabled.
+multisite: 
+
+  #
+  # Defines the strategy for resolving sites.
+  # LOCAL    : Look in the YAML. 
+  # DATABASE : Look in the database.
+  # REDIS    : Look in the redis (future idea.)
+  # 
+  # Want the defaults? Just say `resolution_strategies: true` and you get [local, database]
+  resolution_strategies: ['local', 'database']
+  
+  #
+  # This is how you define the database that contains your federation data.
+  # This is technically an optional property. If absent, falls back to `site_defaults`
+  resolution_strategy_database: 
+    #
+    # All of the properties found in `site_defaults` also appear here.
+    #
+    ... 
+  
   # At time of writing, there is only 1 federation option.
   # 
   # If we can't find the host_name in the database, do you want to:
-  #    A) ACCEPT - Fall back to the values in the `defaults` section. (set it to `defaults`)
-  #    B) REJECT - Throw an error. (set it to `fail` or false)
-  #    C) DEFAULT - If you don't care, just leave the key out of this file. It defaults to `defaults` (naturally).
-  host_name_not_found_action: 'defaults' 
+  #    SITE_DEFAULTS  : (default value) Accept the traffic. Use the values in the `site_defaults` section. (set it to `site_defaults` or `true` or null (remove the key entirely))
+  #    FAIL           : Throw an error. (set it to `fail` or false)
+  host_name_not_found_action: 'site_defaults' 
+
+site_defaults:
+  ... 
+  
+smyers.net:
+  ...
+  
+coursescheduler.com
+  ... 
+
   
 ...
 ```
