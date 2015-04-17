@@ -74,16 +74,9 @@ The required database schema is the same structure as the field table above.
 
 ###### Required Database Layout (federation database)
 
-Column Name   | Column Type  | Allow Null | Default Value         | Notes                                   |
-------------- | ------------ | ---------- | --------------------- | --------------------------------------- |
-id            | Number       |      N     | Auto Number           | 
-host          | String       |      Y     | `database.yml`        | 
-username      | String       |      Y     | `database.yml`        | 
-password      | String       |      Y     | `database.yml`        | 
-pool          | Number       |      Y     | `database.yml` or 50  | Number of connections to keep active. 
-timeout       | Number       |      Y     | `database.yml or 5000 | Amount of time to wait for a connection before giving up
-
 ```sql
+-- The database name of `federation` is configured in your `config/database.yml` file
+
 CREATE TABLE `federation`.`federation_databases`
 (
   `id`        BIGINT NOT NULL AUTO_INCREMENT, 
@@ -114,14 +107,14 @@ CREATE TABLE `federation`.`federation_host_names`
 ###### What's the fetch logic? (SQL Mode)
 
 1. Someone comes to the site at `http://www.smyers.net` *(This is the first time that this site has been fetched.)*
-2. We execute this SQL *(with host_name = `www.smyers.net`)*
+2. We execute this SQL *(with `host_name = www.smyers.net`)*
 ```SQL
-SELECT * FROM federation_databases
-  INNER JOIN federation_host_names ON federation_databases.id == federation_host_names.federation_database_id
+SELECT federation_databases.*,federation_host_names.database FROM federation_databases
+  INNER JOIN federation_host_names ON federation_databases.id = federation_host_names.federation_database_id
   WHERE host_name = ?
 ```
-3. If it returns zero results, we check the `use_default_on_miss` flag. If that's `true` then we *'keep going'* with the federation database active in `ActiveRecord`. If that's `false` then we fail with "some exception".
-4. If it returns 1 result, we connect over to that database *(or we use a previous connection, if cached)* and 'keep going' with that database info active in `ActiveRecord`.
+3. If it returns `zero` results, we check the `use_default_on_miss` flag. If that's `true` then we *'keep going'* with the `default federation database` active in `ActiveRecord`. If that's `false` then we fail with `"some exception"`.
+4. If it returns `one` result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
 
 
 
