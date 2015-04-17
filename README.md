@@ -15,15 +15,28 @@ This plugin allows you to host multiple sites using the same runtime. In the Rai
 
 This plugin has 3 modes of operation:
 
-1. Present but inactive *(default if file missing or `multisite: false`)*
-2. Active via YAML      *(default if `multisite: true`)*
-3. Active via SQL       *(must be specifically set via `multisite: 'sql'`)*
+1. Inactive 
+2. Active with YAML      *(default if `multisite: true`)*
+3. Active with SQL       *(must be specifically set via `multisite: 'sql'`)*
 
-#### Present but inactive
+Someone asked for a helpful table because tables are helpful. Here's a table:
 
-This plugin will detect the absence of a config file (`config/multisite.yml`) and then switch into inactive mode. It will not modify your application memory space.
+File present  | key: multisite | mode
+------------- | -------------
+No            | -              | inactive
+Yes           | -              | inactive
+Yes           | false          | inactive
+Yes           | true           | YAML
+Yes           | 'yaml'         | YAML
+Yes           | 'sql'          | SQL  
 
-Alternatively, you can have the `config/multisite.yml` file present, but disable it via:
+#### Mode: Inactive
+
+When you install this Gem, **it is disabled by default.** When inactive, this Gem will not modify your application memory space.
+
+You must enable it by creating the file `config/multisite.yml` and setting `multisite:[some value]` for it to be enabled. Not literally `[some value]`. 
+
+Alternatively, you can have the `config/multisite.yml` file present, but disable it via `multisite: false`.
 
 ```YAML
 # @file: config/multisite.yml
