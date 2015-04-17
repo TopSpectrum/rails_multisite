@@ -87,12 +87,15 @@ timeout       | Number       |      Y     | `database.yml or 5000 | Amount of ti
 CREATE TABLE `federation`.`federation_databases`
 (
   `id`        BIGINT NOT NULL AUTO_INCREMENT, 
-  `host`      VARCHAR(255),                    -- IP (save dns lookups) or Hostname of other database
-  `username`  VARCHAR(255),                    -- Username for the other database
-  `password`  VARCHAR(255),                    -- Password for the other database
-  `pool`      SMALLINT,                        -- Number of connections to cache
-  `timeout`   SMALLINT,                        -- Timeout in milliseconds to wait to connect
   
+  `host`      VARCHAR(255),       -- IP (save dns lookups) or Hostname of other database
+  `username`  VARCHAR(255),       -- Username for the other database
+  `password`  VARCHAR(255),       -- Password for the other database
+  `pool`      SMALLINT,           -- Number of connections to cache
+  `timeout`   SMALLINT,           -- Timeout in milliseconds to wait to connect
+  
+  `database`  VARCHAR(255),       -- The database name to use on this host. (can be null)
+                                  -- If both parent/child are null, defaults to your `database.yml` value.
   PRIMARY KEY (`id`)
 );
 
@@ -100,6 +103,9 @@ CREATE TABLE `federation`.`federation_host_names`
 (
   `federation_database_id`  BIGINT NOT NULL,  -- The id of the parent (federation.federation_sites) 
   `host_name`               VARCHAR(255),     -- The hostname that rails sees (ex: smyers.net)
+  `database`                VARCHAR(255),     -- The database name to use for this host name. 
+                                              -- If null, defaults to parent value.
+                                              -- If both parent/child are null, defaults to your `database.yml` value.
   
   PRIMARY KEY(`host_name`)                    -- This is the primary entry point to this dataset.
 );
@@ -108,7 +114,7 @@ CREATE TABLE `federation`.`federation_host_names`
 ###### What's the fetch logic? (SQL Mode)
 
 1. Someone comes to the site at `http://www.smyers.net` *(This is the first time that this site has been fetched.)*
-2. We execute this SQL
+2. We execute this SQL *(with host_name = `www.smyers.net`)*
 ```SQL
 SELECT * FROM federation_databases
   INNER JOIN federation_host_names ON federation_databases.id == federation_host_names.federation_database_id
