@@ -51,16 +51,16 @@ The config file (multisite.yml) lists the hosts that you support and their datab
 
 **multisite.yml:**
 ```yaml
-federation: true      # Enable
-smyers.net:                      # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
-  adapter: postgresql            # Defaults to the matching `config/database.yml` value
-  host: 123.123.123.123          # Defaults to the matching `config/database.yml` value
-  username: SOME_USERNAME        # Defaults to the matching `config/database.yml` value
-  password: SOME_PASSWORD        # Defaults to the matching `config/database.yml` value
-  database: smyers_net           # Defaults to the matching `config/database.yml` value
-  pool: 25                       # Defaults to the matching `config/database.yml` value (then default to 25)
-  timeout: 5000                  # Defaults to the matching `config/database.yml` value (then defaults to 5000)
-  host_names:                    # Required. Must be unique across all active database configs.
+federation: true           # Enable
+smyers.net:                # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
+  adapter: postgresql      # Defaults to the matching `config/database.yml` value
+  host: 123.123.123.123    # Defaults to the matching `config/database.yml` value
+  username: SOME_USERNAME  # Defaults to the matching `config/database.yml` value
+  password: SOME_PASSWORD  # Defaults to the matching `config/database.yml` value
+  database: smyers_net     # Defaults to the matching `config/database.yml` value
+  pool: 25                 # Defaults to the matching `config/database.yml` value (then default to 25)
+  timeout: 5000            # Defaults to the matching `config/database.yml` value (then defaults to 5000)
+  host_names:              # Required. Names must be unique across all active database configs.
     - smyers.net
     - michael.smyers.net
 coursescheduler.com:
@@ -150,7 +150,8 @@ development:
 test:
   ...                    # Special settings for test
 production:
-  smyers.net:            # In-file yml mode for production.
+  federation: true       # In-file yml mode for production. When true, searches for keys for config data.
+  smyers.net:            #
     ...
 ```
 
