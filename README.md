@@ -60,8 +60,10 @@ defaults:
 smyers.net:
   # 
   # All properties can be placed here to override default values.
-  # Order of lookup: this -> 'config/multisite.yml|defaults' -> 'config/
-  host_names:              # Required. Names must be unique across all active database configs.
+  # Order of lookup: this -> '../defaults' -> 'config/database.yml'
+  # This list is required and names must be unique across all active database configs.
+  # All entries in this list will resolve to exactly the same properties (no more configuration options past this point)
+  host_names:              
     - smyers.net
     - michael.smyers.net
 coursescheduler.com:
