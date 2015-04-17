@@ -51,7 +51,7 @@ The config file (multisite.yml) lists the hosts that you support and their datab
 
 **multisite.yml:**
 ```yaml
-federation: true           # Enable
+federation: true           # Enabled with all values defaulted as much as possible. 
 smyers.net:                # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
   adapter: postgresql      # Defaults to the matching `config/database.yml` value
   host: 123.123.123.123    # Defaults to the matching `config/database.yml` value
