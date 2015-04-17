@@ -33,6 +33,14 @@ production:
   ...
 ```
 
+Alternatively, you can have default configs in the global space.
+
+```YAML
+federation:false # default to disabled
+production: # but turn it on for production
+  ...
+```
+
 #### Active via YAML
 
 This is the simplist (but most limiting) mode of operation.
