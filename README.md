@@ -123,7 +123,7 @@ coursescheduler.com:
 If a lookup fails an in-memory call, we determine the next step. Here's the logic breakdown:
 
 1. Customer accesses site via **http://www.smyers.net/is/awesome?verified=true** *(for example)*
-2. This Gem intercepts the call and looks up *some_host_name* in the in-memory hash that was populated by YAML.
+2. This Gem intercepts the call and looks up *www.smyers.net* in the in-memory hash that was populated by YAML.
 3. It's not found. Bummer.
 4. We check the fallback strategy for what to do next.
 5. Turns out the next step is 'remote' *(aka: the federation database)* 
