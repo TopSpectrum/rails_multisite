@@ -58,7 +58,9 @@ The config file (multisite.yml) is still present, but it contains the site name 
 
 **multisite.yml:**
 ```yaml
-federation:true # Tells the app to use `database.yml` as federation data, not actual data.
+federation:    # Tells the app to use `database.yml` as federation data, not actual data.
+  cache: 4     # Number of minutes to cache this information for (false or 0 to disable caching. WARNING: SQL query every refresh! Defaults to 24 hours)
+  use_default_on_miss: true # Indicates to use the master database information if the site is not found in the database. This means you need to use your load balancer (ex: nginx) to protect this site from unsupported hostnames.
 ```
 
 ##### How does this work?
@@ -82,7 +84,7 @@ pool          | Number       |      Y     | `database.yml` or 50  | Number of co
 timeout       | Number       |      Y     | `database.yml or 5000 | Amount of time to wait for a connection before giving up
 
 ```sql
-CREATE TABLE `federation`.`federation_sites`
+CREATE TABLE `federation`.`federation_databases`
 (
   `id`        BIGINT NOT NULL AUTO_INCREMENT, 
   `host`      VARCHAR(255),                    -- IP (save dns lookups) or Hostname of other database
@@ -96,11 +98,26 @@ CREATE TABLE `federation`.`federation_sites`
 
 CREATE TABLE `federation`.`federation_host_names`
 (
-  `federation_site_id`  BIGINT NOT NULL,      -- The id of the parent (federation.federation_sites) 
-  `host_name`           VARCHAR(255),         -- The hostname that rails sees (ex: smyers.net)
+  `federation_database_id`  BIGINT NOT NULL,  -- The id of the parent (federation.federation_sites) 
+  `host_name`               VARCHAR(255),     -- The hostname that rails sees (ex: smyers.net)
   
   PRIMARY KEY(`host_name`)                    -- This is the primary entry point to this dataset.
 );
-CREATE INDEX idx_federation__federation_host_names ON federation_host_names(federation_side_id);
 ```
+
+###### What's the fetch logic? (SQL Mode)
+
+1. Someone comes to the site at `http://www.smyers.net` *(This is the first time that this site has been fetched.)*
+2. We execute this SQL
+```SQL
+SELECT * FROM federation_databases
+  INNER JOIN federation_host_names ON federation_databases.id == federation_host_names.federation_database_id
+  WHERE host_name = ?
+```
+3. If it returns zero results, we check the `use_default_on_miss` flag. If that's `true` then we keep going. If that's `false` then we fail with "some exception".
+4. If it returns 1 result, we connect over to that database *(or we use a previous connection, if cached)* and show the page *(with that database info active in `ActiveRecord`)*.
+
+
+
+
 
