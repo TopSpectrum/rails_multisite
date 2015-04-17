@@ -25,6 +25,7 @@ This is the simplist (but most limiting) mode of operation.
 The config file (multisite.yml) lists the hosts that you support and their database information. This information is 
 defined at boot time and is immutable. To change the information, you must restart the app.
 
+```yaml
     smyers.net:
       adapter: postgresql
       database: smyers_net
@@ -43,7 +44,7 @@ defined at boot time and is immutable. To change the information, you must resta
       host_names:
         - courseschduler.net
         - courseschduler.com
-
+```
 
 #### Active via federation database
 
