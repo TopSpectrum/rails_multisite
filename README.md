@@ -16,58 +16,53 @@ This plugin allows you to host multiple sites using the same runtime. In the Rai
 This plugin has 3 modes of operation:
 
 1. Inactive 
-2. Active with YAML      *(default if `multisite: true`)*
-3. Active with SQL       *(must be specifically set via `multisite: 'sql'`)*
-
-Someone asked for a helpful table because tables are helpful. Here's a table:
-
-File present  | key: multisite | mode
-------------- | -------------
-No            | -              | inactive
-Yes           | -              | inactive
-Yes           | false          | inactive
-Yes           | true           | YAML
-Yes           | 'yaml'         | YAML
-Yes           | 'sql'          | SQL  
+2. Active with YAML only
+3. Active with SQL and YAML
 
 #### Mode: Inactive
 
-When you install this Gem, **it is disabled by default.** When inactive, this Gem will not modify your application memory space.
+When you install this Gem, **it is disabled by default.** When inactive, this Gem will not modify your application memory space. You can safely install it without munging your whole app up. *(Note, if this happens, we are very sorry, and not to blame.)*
 
-You must enable it by creating the file `config/multisite.yml` and setting `multisite:[some value]` for it to be enabled. Not literally `[some value]`. 
+You must enable it by creating the file `config/multisite.yml` and setting `multisite: true` for it to be enabled.
 
 Alternatively, you can have the `config/multisite.yml` file present, but disable it via `multisite: false`.
 
 ```YAML
 # @file: config/multisite.yml
 # @description: 
-#     This file defines the configuration for the rails_multisite plugin.
+#     This file defines the configuration for the Gem.
 #     The configuration is contained inside the 'multisite' key.
-#     Setting this to a value of `false` will disable the plugin.
+#     Setting this to a value of `false` will disable the Gem.
+#     Setting this to a value of `true` will enable the Gem.
 multisite: false
 ```
 
-#### Active via YAML
+#### Active via YAML-only
 
 This is the simplist *(but most limiting)* mode of operation.
 
-The config file `config/multisite.yml` lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
+The config file `config/multisite.yml` lists the hosts that your runtime supports and their database information. This information is defined at boot time and is immutable. To change the information in the YAML file, you must edit the file and restart the app. For large scale apps, this behavior is not desirable.
 
-Set the `multisite` variable to either `true` or `yaml` *(This is because YAML mode is the default)*
+**WARNING:** *YAML data has precendence over SQL data. So if there's the same (but slightly different) data in YAML than SQL, then YAML wins. It's an all or nothing thing. We don't query SQL at all if it's in YAML. You've been warned!*
+
+**To start the magic** set the `multisite` variable to `true` *(magic not guaranteed)*
 
 ```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
-#     The configuration is contained inside the 'federation' key.
-#     Setting this key to a value of 'true' will enable the plugin in YAML mode.
+#     The configuration is contained inside the 'multisite' key.
+#     Setting this key to a value of 'true' will enable the Gem.
 multisite: true
 #
 # These defaults are shared among all sites. Each site entry can declare values to override these values.
-# Each of these keys have defaults if not present. Most of those defaults are found in `config/database.yml` 
-defaults:
-  adapter: postgresql
-  host: 123.123.123.123
+# Each of these properties have defaults if not present. 
+# These defaults are for each site that your runtime supports.
+site_defaults:
+  # The sql adapter to use
+  # default 1: to whatever you have set in `config/database.yml` (final default: 'postgresql')
+  adapter: postgresql      
+  host: 123.123.123.123    # defaults to whatever you have set in `config/database.yml`
   username: SOME_USERNAME
   password: SOME_PASSWORD
   database: smyers_net
