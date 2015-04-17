@@ -4,7 +4,7 @@
 
 This README.md file is actively being developed and is a work in progress.
 
-This plugin allows you to host multiple sites using the same runtime. In the Ruby world, this is called "multisite."
+This plugin allows you to host multiple sites using the same runtime. In the Rails world, this is called "multisite."
 
 ### Modes of operation
 
@@ -25,7 +25,7 @@ Alternatively, you can have the `config/multisite.yml` file present, but disable
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
 #     The configuration is contained inside the 'federation' key.
-#     Settings this key to a value of 'false' will disable the plugin.
+#     Setting this to a value of `false` will disable the plugin.
 federation: false
 ```
 
@@ -35,38 +35,45 @@ This is the simplist *(but most limiting)* mode of operation.
 
 The config file `config/multisite.yml` lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
 
-**multisite.yml:**
 ```yaml
-federation: true           # Enabled with all values defaulted as much as possible. 
-
-
-defaults:                  # These defaults are shared among all sites. The site can declare values to override these values.
-                           # Each of these values defaults to `config/database.yml` if not present.
-  adapter: postgresql      
-  host: 123.123.123.123    
-  username: SOME_USERNAME  
-  password: SOME_PASSWORD  
-  database: smyers_net     
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     The configuration is contained inside the 'federation' key.
+#     Setting this key to a value of 'true' will enable the plugin in YAML mode.
+federation: true
+#
+# These defaults are shared among all sites. Each site entry can declare values to override these values.
+# Each of these keys have defaults if not present. Most of those defaults are found in `config/database.yml` 
+defaults:
+  adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
   pool: 10                 # If not found anywhere, defaults to 25.
   timeout: 1000            # If not found anywhere, defaults to 5000.
-smyers.net:                # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
+#
+# This is a site name.
+# It must be unique, but this value is for your readability. The computer doesn't care. 
+# Though I recommend against calling it 'blaabittyblah' or 'a' since you'll want to remember what it is for.
+smyers.net:
+  # 
   # All properties can be placed here to override default values.
   # Order of lookup: this -> 'config/multisite.yml|defaults' -> 'config/
   host_names:              # Required. Names must be unique across all active database configs.
     - smyers.net
     - michael.smyers.net
 coursescheduler.com:
-  db_id: 2 # must be unique across all sites
-  adapter: postgresql
-  host: 123.123.123.123
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
+  #
+  # Demonstrating that the properties can be overridden.
+  adapter: mysql
+  password: SOME_OTHER_PASSWORD
   database: random_database_name
-  pool: 25
-  timeout: 5000
   host_names:
     - courseschduler.net
     - courseschduler.com
+  # - smyers.net           # This would be invalid and your app would crash.
 ```
 
 #### Active via federation database
