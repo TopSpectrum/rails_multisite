@@ -21,14 +21,14 @@ This plugin will detect the absence of a config file (`config/multisite.yml`) an
 Alternatively, you can have the `config/multisite.yml` file present, but disable it via:
 
 ```YAML
-federation:false
+federation: false
 ```
 
 Alternatively, you can have different configs for each runtime environment:
 
 ```YAML
 development: 
-  federation:false
+  federation: false
 production: 
   ...
 ```
@@ -36,9 +36,9 @@ production:
 Alternatively, you can have default configs in the global space.
 
 ```YAML
-federation:false # default to disabled
-production: # but turn it on for production
-  ...
+federation: false   # Default to disabled
+production:         
+  ...               # but turn it on for production
 ```
 
 #### Active via YAML
@@ -51,16 +51,16 @@ The config file (multisite.yml) lists the hosts that you support and their datab
 
 **multisite.yml:**
 ```yaml
-smyers.net:
-  db_id: 1 # must be unique across all sites
-  adapter: postgresql
-  host: 123.123.123.123
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
-  database: smyers_net
-  pool: 25
-  timeout: 5000
-  host_names:
+federation: true      # Enable
+smyers.net:                      # Must be unique, but this value is for your readability. Computer doesn't care. Though I recommend against calling it 'blaabittyblah'
+  adapter: postgresql            # Defaults to the matching `config/database.yml` value
+  host: 123.123.123.123          # Defaults to the matching `config/database.yml` value
+  username: SOME_USERNAME        # Defaults to the matching `config/database.yml` value
+  password: SOME_PASSWORD        # Defaults to the matching `config/database.yml` value
+  database: smyers_net           # Defaults to the matching `config/database.yml` value
+  pool: 25                       # Defaults to the matching `config/database.yml` value (then default to 25)
+  timeout: 5000                  # Defaults to the matching `config/database.yml` value (then defaults to 5000)
+  host_names:                    # Required. Must be unique across all active database configs.
     - smyers.net
     - michael.smyers.net
 coursescheduler.com:
