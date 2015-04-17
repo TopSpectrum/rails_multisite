@@ -72,19 +72,19 @@ The required database schema is the same structure as the field table above.
 
 ###### Required Database Layout (federation database)
 
-Column Name   | Column Type  | Allow Null | Default Value        | Notes                                   |
-------------- | ------------ | ---------- | -------------------- | --------------------------------------- |
-id            | Number       |      N     | Auto Number          | 
-host          | String       |      Y     | `database.yml`       | 
-username      | String       |      Y     | `database.yml`       | 
-password      | String       |      Y     | `database.yml`       | 
-pool          | Number       |      Y     | `database.yml` || 50 | Number of connections to keep active. I
-timeout       | Number       |      Y     | 5000                 | Amount of time to wait for a connection before giving up
+Column Name   | Column Type  | Allow Null | Default Value         | Notes                                   |
+------------- | ------------ | ---------- | --------------------- | --------------------------------------- |
+id            | Number       |      N     | Auto Number           | 
+host          | String       |      Y     | `database.yml`        | 
+username      | String       |      Y     | `database.yml`        | 
+password      | String       |      Y     | `database.yml`        | 
+pool          | Number       |      Y     | `database.yml` or 50  | Number of connections to keep active. 
+timeout       | Number       |      Y     | `database.yml or 5000 | Amount of time to wait for a connection before giving up
 
 ```sql
 CREATE TABLE `federation`.`federation_sites`
 (
-  `id`        INTEGER NOT NULL AUTO_INCREMENT, 
+  `id`        BIGINT NOT NULL AUTO_INCREMENT, 
   `host`      VARCHAR(255),                    -- IP (save dns lookups) or Hostname of other database
   `username`  VARCHAR(255),                    -- Username for the other database
   `password`  VARCHAR(255),                    -- Password for the other database
@@ -92,6 +92,15 @@ CREATE TABLE `federation`.`federation_sites`
   `timeout`   SMALLINT,                        -- Timeout in milliseconds to wait to connect
   
   PRIMARY KEY (`id`)
-)
+);
+
+CREATE TABLE `federation`.`federation_host_names`
+(
+  `federation_side_id`  BIGINT NOT NULL, 
+  `host_name`           VARCHAR(255),           
+  
+  PRIMARY KEY(`host_name`)
+);
+CREATE INDEX idx_federation__federation_host_names ON federation_host_names(federation_side_id);
 ```
 
