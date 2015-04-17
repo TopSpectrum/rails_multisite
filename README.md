@@ -21,6 +21,11 @@ This plugin will detect the absence of a config file (`config/multisite.yml`) an
 Alternatively, you can have the `config/multisite.yml` file present, but disable it via:
 
 ```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     The configuration is contained inside the 'federation' key.
+#     Settings this key to a value of 'false' will disable the plugin.
 federation: false
 ```
 
