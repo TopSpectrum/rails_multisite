@@ -24,9 +24,9 @@ Alternatively, you can have the `config/multisite.yml` file present, but disable
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
-#     The configuration is contained inside the 'federation' key.
+#     The configuration is contained inside the 'multisite' key.
 #     Setting this to a value of `false` will disable the plugin.
-federation: false
+multisite: false
 ```
 
 #### Active via YAML
@@ -41,7 +41,7 @@ The config file `config/multisite.yml` lists the hosts that you support and thei
 #     This file defines the configuration for the rails_multisite plugin.
 #     The configuration is contained inside the 'federation' key.
 #     Setting this key to a value of 'true' will enable the plugin in YAML mode.
-federation: true
+multisite: true
 #
 # These defaults are shared among all sites. Each site entry can declare values to override these values.
 # Each of these keys have defaults if not present. Most of those defaults are found in `config/database.yml` 
@@ -80,13 +80,15 @@ coursescheduler.com:
 
 #### Active via federation database
 
-The config file (multisite.yml) is still present, but it contains the site name of `default`. At time of writing, all other entries will be ignored if the `default` entry is present.
+The `config/multisite.yml` file is still present, but it contains the site name of `default`. At time of writing, all other entries will be ignored if the `default` entry is present.
 
-**multisite.yml:**
 ```yaml
-federation:    # Tells the app to use `database.yml` as federation data, not actual data.
-  cache: 4     # Number of minutes to cache this information for (false or 0 to disable caching. WARNING: SQL query every refresh! Defaults to 24 hours)
-  use_default_on_miss: true # Indicates to use the master database information if the site is not found in the database. This means you need to use your load balancer (ex: nginx) to protect this site from unsupported hostnames.
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     The configuration is contained inside the 'federation' key.
+#     Setting this key to a value of 'federation' will enable the plugin in YAML mode.
+multisite: 'federation'   # Tells the app to use `database.yml` as federation data, not actual data.
 ```
 
 ##### How does this work?
@@ -129,7 +131,7 @@ CREATE TABLE `federation`.`federation_host_names`
 
 ###### What's the fetch logic? (SQL Mode)
 
-1. Someone comes to the site at `http://www.smyers.net` *(This is the first time that this site has been fetched.)*
+1. Someone comes to the site at `http://www.smyers.net/something/fancy` *(This is the first time that this site has been fetched.)*
 2. We execute this SQL *(with `host_name = www.smyers.net`)*
 ```SQL
 SELECT federation_databases.*,federation_host_names.database FROM federation_databases
@@ -138,6 +140,7 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
 ```
 3. If it returns `zero` results, we check the `config/multisite.yml|federation.use_default_on_miss` flag. If that's `true` then we *'keep going'* with the `default federation database` active in `ActiveRecord`. If that's `false` then we fail with `"some exception"`.
 4. If it returns `one` result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
+5. We allow for fallback, so `database` = defaultString(try_first: `federation_host_names.database`, try_last: `federation_databases.database`)
 
 ### Advanced config options
 
