@@ -16,7 +16,13 @@ This plugin has 3 modes of operation:
 
 #### Present but inactive
 
-This plugin will detect the absence of a config file (multisite.yml) and then switch into inactive mode. It will not modify your application memory space.
+This plugin will detect the absence of a config file (`config/multisite.yml`) and then switch into inactive mode. It will not modify your application memory space. This is for backwards compat.
+
+Alternatively, you can have the `config/multisite.yml` file present, but disable it via:
+
+```YAML
+federation:false
+```
 
 #### Active via YAML
 
@@ -113,7 +119,19 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
 3. If it returns `zero` results, we check the `use_default_on_miss` flag. If that's `true` then we *'keep going'* with the `default federation database` active in `ActiveRecord`. If that's `false` then we fail with `"some exception"`.
 4. If it returns `one` result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
 
+### Advanced config options
 
+#### 1. Environment aware config
+
+```YAML
+development:
+  federation: false
+test:
+  federation: false
+production:
+  smyers.net: 
+    
+```
 
 
 
