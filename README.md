@@ -65,12 +65,9 @@ federation:    # Tells the app to use `database.yml` as federation data, not act
 
 ##### How does this work?
 
-The federation database contains a master record of where things are located. So instead of defining your sites in the yml file, you define them in the database. 
+The federation database contains a master record of where things are located. So instead of defining your sites in the `config/multisite.yml` file, you define them in the `federation.federation_databases` database. 
 
-We use `config/database.yml` to figure out where your federation data is located. 
-
-The required database schema is the same structure as the field table above.
-
+We use `config/database.yml` as the database for your federation data. So you should put your `federation` database info into `config/database.yml` and put your *'regular database connection info'* as rows in your federation database.
 
 ###### Required Database Layout (federation database)
 
