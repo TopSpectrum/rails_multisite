@@ -114,8 +114,8 @@ SELECT * FROM federation_databases
   INNER JOIN federation_host_names ON federation_databases.id == federation_host_names.federation_database_id
   WHERE host_name = ?
 ```
-3. If it returns zero results, we check the `use_default_on_miss` flag. If that's `true` then we keep going. If that's `false` then we fail with "some exception".
-4. If it returns 1 result, we connect over to that database *(or we use a previous connection, if cached)* and show the page *(with that database info active in `ActiveRecord`)*.
+3. If it returns zero results, we check the `use_default_on_miss` flag. If that's `true` then we *'keep going'* with the federation database active in `ActiveRecord`. If that's `false` then we fail with "some exception".
+4. If it returns 1 result, we connect over to that database *(or we use a previous connection, if cached)* and 'keep going' with that database info active in `ActiveRecord`.
 
 
 
