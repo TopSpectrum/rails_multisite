@@ -26,15 +26,19 @@ The config file (multisite.yml) lists the hosts that you support and their datab
 
 ```yaml
 smyers.net:
+  db_id: 1 # must be unique across all sites
   adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
   database: smyers_net
   pool: 25
   timeout: 5000
-  db_id: 1 # must be unique across all sites
   host_names:
     - smyers.net
     - michael.smyers.net
 coursescheduler.com:
+  db_id: 2 # must be unique across all sites
   adapter: postgresql
   host: 123.123.123.123
   username: SOME_USERNAME
@@ -42,7 +46,6 @@ coursescheduler.com:
   database: random_database_name
   pool: 25
   timeout: 5000
-  db_id: 2 # must be unique across all sites
   host_names:
     - courseschduler.net
     - courseschduler.com
@@ -50,11 +53,11 @@ coursescheduler.com:
 
 #### Active via federation database
 
-The config file (multisite.yml) is still present, but it contains the site name of `default` 
-
+The config file (multisite.yml) is still present, but it contains the site name of `default`. At time of writing, all other entries will be ignored if the `default` entry is present.
 
 ```yaml
 default:
+  db_id: 1 # must be unique across all sites
   adapter: postgresql
   host: 123.123.123.123
   username: SOME_USERNAME
@@ -62,7 +65,4 @@ default:
   database: smyers_net
   pool: 25
   timeout: 5000
-  db_id: 1 # must be unique across all sites
 ```
-
-
