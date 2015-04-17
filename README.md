@@ -1,5 +1,10 @@
 # rails_multisite
 
+# Editor notes to self
+
+
+
+
 ## Description
 
 This README.md file is actively being developed and is a work in progress.
@@ -10,9 +15,9 @@ This plugin allows you to host multiple sites using the same runtime. In the Rai
 
 This plugin has 3 modes of operation:
 
-1. Present but inactive
-2. Active via YAML
-3. Active via Federation Database 
+1. Present but inactive *(default if file missing or `multisite: false`)*
+2. Active via YAML      *(default if `multisite: true`)*
+3. Active via SQL       *(must be specifically set via `multisite: 'sql'`)*
 
 #### Present but inactive
 
@@ -34,6 +39,8 @@ multisite: false
 This is the simplist *(but most limiting)* mode of operation.
 
 The config file `config/multisite.yml` lists the hosts that you support and their database information. This information is defined at boot time and is immutable. To change the information, you must restart the app.
+
+Set the `multisite` variable to either `true` or `yaml` *(This is because YAML mode is the default)*
 
 ```yaml
 # @file: config/multisite.yml
@@ -78,40 +85,41 @@ coursescheduler.com:
   # - smyers.net           # This would be invalid and your app would crash.
 ```
 
-#### Active via federation database
+#### Active via federation database (sql)
 
-The `config/multisite.yml` file is still present, but it contains the site name of `default`. At time of writing, all other entries will be ignored if the `default` entry is present.
+Enable sql federation by setting `multisite: 'sql'` in `config/multisite.yml`
 
 ```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
-#     The configuration is contained inside the 'federation' key.
-#     Setting this key to a value of 'federation' will enable the plugin in FEDERATION mode.
-#     Tells the app to use `database.yml` as federation data, instead of using it as a real database for your domain data.
-multisite: 'federation'   
+#     The configuration is contained inside the optional 'federation' key.
+#     Setting this key to a value of 'sql' will enable the plugin in FEDERATION mode.
+#     Tells the app to use `database.yml` as a federation data source, instead of using it as a real database for your domain data.
+multisite: 'sql'   
 #
-# Since we're in federation mode, the federation settings are in the `federation` key
+# Since we're in federation mode, the federation settings are in the `federation` key. This key is optional.
+# Default values are indicated as appropriate.
 #
 federation:
-  #
+  # At time of writing, there is only 1 federation option.
   # 
   # If we can't find the host_name in the database, do you want to:
   #    A) ACCEPT - Fall back to the values in the `defaults` section. (set it to `defaults`)
   #    B) REJECT - Throw an error. (set it to `fail` or false)
   #    C) DEFAULT - If you don't care, just leave the key out of this file. It defaults to `defaults` (naturally).
   host_name_not_found_action: 'defaults' 
-
+  
 ...
 ```
 
 ##### How does this work?
 
-The federation database contains a master record of where things are located. So instead of defining your host_names in the `config/multisite.yml` file, you define them in the `federation.federation_databases` database. 
+The federation database contains a lookup table of which database each of your sites uses. So instead of defining your host_names in the `config/multisite.yml` file, you define them in the `federation` database. *(The name is defined in `config/database.yml`)*
 
-We use `config/database.yml` as the database for your federation data. So you should put your *'federation database info'* into `config/database.yml` and put your *'regular database connection info'* as rows in your federation database.
+We use `config/database.yml` as the config file for your federation database. So you should put your *'federation database info'* into `config/database.yml` and put your *'regular database connection info'* as rows in your federation database.
 
-###### Required Database Layout (federation database)
+###### Federation Database Layout (federation database)
 
 ```sql
 -- The database name of `federation` is configured in your `config/database.yml` file. You could change it if you wanted.
@@ -162,15 +170,20 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
 #### 1. Environment aware config
 
 ```YAML
-federation:
-  ...                    # Default values for every environment go here.
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     This example shows how to scope each site by environment
+#     
+multisite: false           # Globally default to disabled.
 development: 
-  federation: false      # Disabled for development
+  multisite: false         # Redeclare disabled for development. Unnecessary, but shows scoping.
 test:
-  ...                    # Special settings for test
+  multisite: true          # YAML mode for test
+  
 production:
-  federation: true       # In-file yml mode for production. When true, searches for keys for config data.
-  smyers.net:            #
+  multisite: 'federation'  # In-file yml mode for production. When true, searches for keys for config data.
+  smyers.net:              #
     ...
 ```
 
