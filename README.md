@@ -1,4 +1,4 @@
-# rails_multisite
+# RailsMultisite
 
 **Gem Version:** 0.1.0  
 **Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)  
