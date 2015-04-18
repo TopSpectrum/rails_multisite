@@ -136,7 +136,7 @@ Larry went to the browser and typed in a DNS entry that hit your app. Here's the
 10. What's the next `resolution_strategy`? There isn't one. We're out of things to try.
 11. Check the `cache_strategy` settings.
 12. Turns out we want to cache the misses. Inserts into the `miss_cache` *(evicting another miss token if we're full)* 
-13. **SCENARIO 1:** Checks the `host_name_not_found_action` property and discovers it's set to `defaults` - loads the default database info and shows the site.
+13. **SCENARIO 1:** Checks the `host_name_not_found_action` property and discovers it's set to `site_defaults` - loads the default database info and shows the site.
 14. **SCENARIO 2:** Checks the `host_name_not_found_action` property and discovers it's set to `fail` - throws a nasty error and calls the cops on the intruder *(cop module not provided)*
 
 **How do you take advantage of it?** You have to replace the `multisite: true` with an expanded config set.
