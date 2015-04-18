@@ -11,9 +11,9 @@
 gem install 'rails_multisite'
 ```
 
-## History
+## Description
 
-This plugin allows you to host multiple sites using the same runtime. In the Rails world, this is called "multisite."
+This plugin allows your rails app to host multiple sites using the same runtime. In the Rails world, this is called "multisite."
 
 It was written for (Discourse)[http://www.discourse.org] users to be able to host multiple forums with a single rails codebase. For this reason, as a design principal, the code must be 100% compatible with the existing Discourse `config/multisite.yml` solution. This Gem extends that functionality with database lookups and caching.
 
