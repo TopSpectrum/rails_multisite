@@ -166,9 +166,9 @@ multisite:
   resolution_strategies: [local, database]
   #
   # If we can't find the site in any lookup, you have options. Do you want to:
-  #    SITE_DEFAULTS  : (default value) Accept the traffic. Use the values in the `site_defaults` section. (set it to `site_defaults` or `true` or null (remove the key entirely))
-  #    FAIL           : Throw an error. (set it to `fail` or false)
-  host_name_not_found_action: 'site_defaults' 
+  #    SITE_DEFAULTS  : Accept the traffic. Use the values in the `site_defaults` section. (set it to `site_defaults` or `true` or null (remove the key entirely))
+  #    FAIL           : (default value) Throw an error. (set it to `fail` or false)
+  host_name_not_found_action: 'fail' 
   #
   # Want to disable all caching? Set `cache_strategy: false`
   # Caching really only makes sense if you use a slow lookup strategy. The local YAML lookups never result in a 
