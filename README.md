@@ -220,7 +220,7 @@ site_defaults:
 smyers.net:
   ...
   
-coursescheduler.com
+coursescheduler.com:
   ... 
 
   
@@ -296,9 +296,10 @@ test:
   multisite: true          # YAML mode for test
   
 production:
-  multisite: 'federation'  # In-file yml mode for production. When true, searches for keys for config data.
-  smyers.net:              #
-    ...
+  multisite:  
+    ...                    # Super complex production settings that uses 40 database fallbacks!
+  smyers.net:              
+    ...                    # In-memory YAML data too.
 ```
 
 
