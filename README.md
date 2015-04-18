@@ -120,16 +120,24 @@ coursescheduler.com:
 
 #### Active via YAML and SQL.
 
-If a lookup fails an in-memory call, we determine the next step. Here's the logic breakdown:
+To understand how the YAML/SQL fallback works, I will share a story.
 
-1. Customer accesses site via **http://www.smyers.net/is/awesome?verified=true** *(for example)*
-2. This Gem intercepts the call and looks up *www.smyers.net* in the in-memory hash that was populated by YAML.
-3. It's not found. Bummer.
-4. We check the fallback strategy for what to do next.
-5. Turns out the next step is 'database' *(aka: the federation database)* 
-6. Connect to the *federation database* and look up *some_host_name*
-7. **Scenario 1:** Gets back data. Boom. Carry on.
-8. **Scenario 2:** Gets back no data. Damn. Go to next fallback strategy.
+Larry went to the browser and typed in a DNS entry that hit your app. Here's the logic breakdown:
+
+1. Larry accesses site via **http://www.smyers.net/is/awesome?verified=true** *(for example)*
+2. This Gem intercepts the call.
+3. This Gem iterates through each `resolution_strategy`.
+4. The first one is 'local' (in-memory YAML) and looks up *www.smyers.net* in the in-memory hash.
+5. It's not found. Bummer.
+6. We check the second `resolution_strategy` 
+7. Turns out the next step is `database` *(aka: the federation database)* 
+8. Check the *federation database* and look up *www.smyers.net*
+9. If we had found data, we could have carried on. But we didn't. Bummer.
+10. What's the next `resolution_strategy`? There isn't one. We're out of things to try.
+11. Check the `cache_strategy` settings.
+12. Turns out we want to cache the misses. Inserts into the `miss_cache` *(evicting another miss token if we're full)* 
+13. **SCENARIO 1:** Checks the `host_name_not_found_action` property and discovers it's set to `defaults` - loads the default database info and shows the site.
+14. **SCENARIO 2:** Checks the `host_name_not_found_action` property and discovers it's set to `fail` - throws a nasty error and calls the cops on the intruder *(cop module not provided)*
 
 **How do you take advantage of it?** You have to replace the `multisite: true` with an expanded config set.
 
