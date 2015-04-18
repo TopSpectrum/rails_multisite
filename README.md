@@ -33,6 +33,127 @@ It was written for [Discourse](http://www.discourse.org) users to be able to hos
 
 The intention of this plugin is to allow Discoure to handle *a theoretical million* sites with only 1 running server. This Gem should *at the very least* cause no overhead. The performance of Discourse shall be the same, as measured by requests per second, whether you are hosting 1 site or *a theoretical million* sites.
 
+### Some example `config/multisite.yml`s 
+
+#### Disable multisite.
+
+**Option 1:** Delete the file.
+
+**Option 2:** Have an empty file.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#
+#     This file intentionally left blank.
+```
+
+**Option 3:** Explicitly disable it.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#     Setting this to a value of `false` will disable the Gem.
+#     Setting this to a value of `true` will enable the Gem.
+multisite: false
+```
+
+#### Enable multisite the 100% same way that Discourse does it. 
+
+This solution is a bit inconsistent. Because we need to be backwards compat, the defaults change a bit. If your file has properties, then the `multisite: true` is the default. If your file does not have properties, then `multisite: false` is assumed default.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#     Setting this to a value of `false` will disable the Gem.
+#     Setting this to a value of `true` will enable the Gem.
+#     Because this file has properties, `multisite: true` is the default.
+smyers.net:
+  adapter: postgresql
+  database: smyers_net
+  pool: 25
+  timeout: 5000
+  db_id: 1
+  host_names:
+    - smyers.net
+    - www.smyers.net
+coursescheduler.com:
+  adapter: postgresql
+  database: coursescheduler
+  pool: 25
+  timeout: 5000
+  db_id: 2
+  host_names:
+    - coursescheduler.com
+    - coursescheduler.net
+    - coursescheduler.org
+```
+
+#### A full-featured example that supports defaults, database fallback, and caching.
+
+
+```yaml
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     This content demonstrates how to setup SQL-fallback for federation lookup.
+#     For brevity, all comments and discussion are removed.
+multisite: 
+  resolution_strategies: [local, database]
+  resolution_strategy_database: 
+    type: database
+    adapter: postgresql      
+    host: 123.123.123.123 
+    username: SOME_USERNAME
+    password: SOME_PASSWORD
+    database: smyers_net
+    pool: 10
+    timeout: 1000
+  host_name_not_found_action: 'fail' 
+  cache_strategy:
+    cache_the_misses: true
+    cache_the_hits: true
+    overall_cache_limit: 1000
+    hit_cache_limit: 1000
+    miss_cache_limit: 10000
+site_defaults:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+smyers.net:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+   - www.smyers.net
+   - smyers.net
+coursescheduler.com:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+   - coursescheduler.net
+   - coursescheduler.com
+```
+
 ### Modes of operation
 
 This plugin has 3 modes of operation:
@@ -53,7 +174,7 @@ Alternatively, you can have the `config/multisite.yml` file present, but disable
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.
-#     The configuration is contained inside the 'multisite' key.
+#     The configuration is contained inside the 'multisite' property.
 #     Setting this to a value of `false` will disable the Gem.
 #     Setting this to a value of `true` will enable the Gem.
 multisite: false
@@ -71,8 +192,8 @@ The config file `config/multisite.yml` lists the hosts that your runtime support
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
-#     The configuration is contained inside the 'multisite' key.
-#     Setting this key to a value of 'true' will enable the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#     Setting this property to a value of 'true' will enable the Gem.
 multisite: true
 #
 # These defaults are shared among all sites. Each site entry can declare values to override these values.
@@ -177,7 +298,7 @@ multisite:
   # By default we only do 'local'. This means you need to specifically mention database to get database lookups. 
   # 
   # Also, the name `database` is not a magic string. Want two database fallbacks instead of 1? Just put in the value
-  # `database1`, `database2` and then add `resolution_strategy_database1` keys to the config.
+  # `database1`, `database2` and then add `resolution_strategy_database1` properties to the config.
   #
   # Want the defaults? Just say `resolution_strategies: true` and you get [local]
   #    (or simply remove it, because that's the default)
@@ -188,7 +309,7 @@ multisite:
   resolution_strategies: [local, database]
   #
   # If we can't find the site in any lookup, you have options. Do you want to:
-  #    SITE_DEFAULTS  : Accept the traffic. Use the values in the `site_defaults` section. (set it to `site_defaults` or `true` or null (remove the key entirely))
+  #    SITE_DEFAULTS  : Accept the traffic. Use the values in the `site_defaults` section. (set it to `site_defaults` or `true` or null (remove the property entirely))
   #    FAIL           : (default value) Throw an error. (set it to `fail` or false)
   host_name_not_found_action: 'fail' 
   #
