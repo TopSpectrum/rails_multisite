@@ -274,10 +274,10 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
   INNER JOIN federation_host_names ON federation_databases.id = federation_host_names.federation_database_id
   WHERE host_name = ?
 ```
-3. If it returns `zero` results, we check the `config/multisite.yml|federation.host_name_not_found_action` flag. If that's `defaults` then we *'keep going'* and set the `default federation database` for use with `ActiveRecord` for this request. If that's `false` or `fail` then we fail with `"some exception"`.
-4. If it returns `one` result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
+3. If it returns **zero** results, we check the `host_name_not_found_action` flag. If that's `site_defaults` then we *'keep going'* and set the `default federation database` for use with `ActiveRecord` for this request. If that's `false` or `fail` then we fail with `"some exception"`.
+4. If it returns **one** result, we connect over to that database *(or we use a previous connection, if cached)* and *'keep going'* with `that database info` active in `ActiveRecord`.
 5. We allow for fallback, so `database` = defaultString(try_first: `federation_host_names.database`, try_last: `federation_databases.database`)
-6. It's not possible to return more than one result, because the host_name is unique.
+6. It's not possible to return **more than one** result, because the host_name is unique.
 
 ### Advanced config options
 
