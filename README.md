@@ -1,9 +1,9 @@
-# rails_multisite 0.1.0
+# rails_multisite
 
-**Gem Version:** 0.1.0\\
-**Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)\\
-**Contributor:** [Sam Saffron](https://meta.discourse.org/users/sam)\\
-**Date:** 4/17/2015\\
+**Gem Version:** 0.1.0  
+**Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)  
+**Contributor:** [Sam Saffron](https://meta.discourse.org/users/sam)  
+**Date:** 4/17/2015  
 
 ## How to install
 
@@ -11,7 +11,7 @@
 gem install 'rails_multisite'
 ```
 
-## Intention
+## History
 
 This plugin allows you to host multiple sites using the same runtime. In the Rails world, this is called "multisite."
 
