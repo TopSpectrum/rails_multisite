@@ -31,7 +31,7 @@ This plugin allows your rails app to host multiple sites using the same runtime.
 
 It was written for [Discourse](http://www.discourse.org) users to be able to host multiple forums with a single rails codebase. For this reason, as a design principal, the code must be 100% compatible with the existing Discourse `config/multisite.yml` solution. This Gem extends that functionality with database lookups and caching.
 
-The intention of this plugin is to allow Discoure to handle *a theoretical million* sites with only 1 running server. This Gem should *at the very least* cause no overhead. The performance of Discourse shall be the same, as measured by requests per second, whether you are hosting 1 site or *a theoretical million* sites.
+The intention of this plugin is to allow Discoure to handle *a theoretical million* sites with only 1 running server. This Gem should *at the very least* cause no overhead. The performance of Discourse shall be the same, as measured by requests per second, whether you are hosting 1 site or *a theoretical million* sites. **This will be verified with performance load testing.**
 
 ### Modes of operation
 
