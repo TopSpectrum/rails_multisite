@@ -126,12 +126,12 @@ If a lookup fails an in-memory call, we determine the next step. Here's the logi
 2. This Gem intercepts the call and looks up *www.smyers.net* in the in-memory hash that was populated by YAML.
 3. It's not found. Bummer.
 4. We check the fallback strategy for what to do next.
-5. Turns out the next step is 'remote' *(aka: the federation database)* 
+5. Turns out the next step is 'database' *(aka: the federation database)* 
 6. Connect to the *federation database* and look up *some_host_name*
-7. **Branch 1:** Gets back data. Boom. Carry on.
-8. **Branch 2:** Gets back no data. Damn. Go to next fallback strategy.
+7. **Scenario 1:** Gets back data. Boom. Carry on.
+8. **Scenario 2:** Gets back no data. Damn. Go to next fallback strategy.
 
-**How do you take advantage of it? You have to replace the `multisite: true` with an expanded config set.
+**How do you take advantage of it?** You have to replace the `multisite: true` with an expanded config set.
 
 ```yaml
 # @file: config/multisite.yml
@@ -142,25 +142,54 @@ If a lookup fails an in-memory call, we determine the next step. Here's the logi
 #
 # The multisite key is not `false` or null, so it's enabled.
 multisite: 
-
   #
   # Defines the strategy for resolving sites.
   # LOCAL    : Look in the YAML. 
   # DATABASE : Look in the database.
   # REDIS    : Look in the redis (future idea.)
   # 
+  # Want two database fallbacks instead of 1? Just put in the value `database1`, `database2` and then add
+  # `resolution_strategy_database1` keys to the config.
+  #
   # Want the defaults? Just say `resolution_strategies: true` and you get [local, database]
+  # Want the database to take precendence over the YAML? Swap it to [database, local] (though that will be slower lookups...)
   resolution_strategies: ['local', 'database']
-  
+  #
+  # It's possible to cache misses so that if someone keeps hitting you with the same bad url OVER AND OVER again, 
+  # then it won't bring down your site via lookup intensity. 
+  # default: true
+  cache_the_misses: true
+  #
+  # For obvious reasons, you'll want to cache the hits. No reason to look that up every request!
+  # default: true
+  cache_the_hits: true
+  # 
+  # What's the first problem we all encounter when we cache things? Out of memory.
+  # default: 1000
+  overall_cache_limit: 1000
+  #
+  # Ideally you want every site that you host to be cache in memory. So make this appropriately large and buy 
+  # memory for your box. If not possible, then active sites will be cached, and inactive ones will drop off the cache.
+  # default: 1000
+  hit_cache_limit: 1000
+  #
+  # The miss cache is pretty efficient, so we'll make that large. If someone is hitting you with a zillion fake 
+  # names, use appropriate solutions for that. This is not a security Gem, it's just a helpful precaution.
+  # default: 10k
+  miss_cache_limit: 10000
   #
   # This is how you define the database that contains your federation data.
-  # This is technically an optional property. If absent, falls back to `site_defaults`
+  # This is technically an optional property. If absent, we default to `site_defaults`
   resolution_strategy_database: 
+    # Currently we only support type 'database'
+    # default: database
+    adapter: database
+    #
     #
     # All of the properties found in `site_defaults` also appear here.
     #
     ... 
-  
+  #
   # At time of writing, there is only 1 federation option.
   # 
   # If we can't find the host_name in the database, do you want to:
