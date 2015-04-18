@@ -33,127 +33,6 @@ It was written for [Discourse](http://www.discourse.org) users to be able to hos
 
 The intention of this plugin is to allow Discoure to handle *a theoretical million* sites with only 1 running server. This Gem should *at the very least* cause no overhead. The performance of Discourse shall be the same, as measured by requests per second, whether you are hosting 1 site or *a theoretical million* sites.
 
-### Some example `config/multisite.yml`s 
-
-#### Disable multisite.
-
-**Option 1:** Delete the file.
-
-**Option 2:** Have an empty file.
-
-```YAML
-# @file: config/multisite.yml
-# @description: 
-#     This file defines the configuration for the Gem.
-#     The configuration is contained inside the 'multisite' property.
-#
-#     This file intentionally left blank.
-```
-
-**Option 3:** Explicitly disable it.
-
-```YAML
-# @file: config/multisite.yml
-# @description: 
-#     This file defines the configuration for the Gem.
-#     The configuration is contained inside the 'multisite' property.
-#     Setting this to a value of `false` will disable the Gem.
-#     Setting this to a value of `true` will enable the Gem.
-multisite: false
-```
-
-#### Enable multisite the 100% same way that Discourse does it. 
-
-This solution is a bit inconsistent. Because we need to be backwards compat, the defaults change a bit. If your file has properties, then the `multisite: true` is the default. If your file does not have properties, then `multisite: false` is assumed default.
-
-```YAML
-# @file: config/multisite.yml
-# @description: 
-#     This file defines the configuration for the Gem.
-#     The configuration is contained inside the 'multisite' property.
-#     Setting this to a value of `false` will disable the Gem.
-#     Setting this to a value of `true` will enable the Gem.
-#     Because this file has properties, `multisite: true` is the default.
-smyers.net:
-  adapter: postgresql
-  database: smyers_net
-  pool: 25
-  timeout: 5000
-  db_id: 1
-  host_names:
-    - smyers.net
-    - www.smyers.net
-coursescheduler.com:
-  adapter: postgresql
-  database: coursescheduler
-  pool: 25
-  timeout: 5000
-  db_id: 2
-  host_names:
-    - coursescheduler.com
-    - coursescheduler.net
-    - coursescheduler.org
-```
-
-#### A full-featured example that supports defaults, database fallback, and caching.
-
-
-```yaml
-# @file: config/multisite.yml
-# @description: 
-#     This file defines the configuration for the rails_multisite plugin.
-#     This content demonstrates how to setup SQL-fallback for federation lookup.
-#     For brevity, all comments and discussion are removed.
-multisite: 
-  resolution_strategies: [local, database]
-  resolution_strategy_database: 
-    type: database
-    adapter: postgresql      
-    host: 123.123.123.123 
-    username: SOME_USERNAME
-    password: SOME_PASSWORD
-    database: smyers_net
-    pool: 10
-    timeout: 1000
-  host_name_not_found_action: 'fail' 
-  cache_strategy:
-    cache_the_misses: true
-    cache_the_hits: true
-    overall_cache_limit: 1000
-    hit_cache_limit: 1000
-    miss_cache_limit: 10000
-site_defaults:
-  adapter: postgresql      
-  host: 123.123.123.123 
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
-  database: smyers_net
-  pool: 10
-  timeout: 1000
-smyers.net:
-  adapter: postgresql      
-  host: 123.123.123.123 
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
-  database: smyers_net
-  pool: 10
-  timeout: 1000
-  host_names:
-   - www.smyers.net
-   - smyers.net
-coursescheduler.com:
-  adapter: postgresql      
-  host: 123.123.123.123 
-  username: SOME_USERNAME
-  password: SOME_PASSWORD
-  database: smyers_net
-  pool: 10
-  timeout: 1000
-  host_names:
-   - coursescheduler.net
-   - coursescheduler.com
-```
-
 ### Modes of operation
 
 This plugin has 3 modes of operation:
@@ -443,6 +322,124 @@ production:
     ...                    # Super complex production settings that uses 40 database fallbacks!
   smyers.net:              
     ...                    # In-memory YAML data too.
+```
+
+#### 2. Disable multisite.
+
+**Option 1:** Delete the file.
+
+**Option 2:** Have an empty file.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#
+#     This file intentionally left blank.
+```
+
+**Option 3:** Explicitly disable it.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#     Setting this to a value of `false` will disable the Gem.
+#     Setting this to a value of `true` will enable the Gem.
+multisite: false
+```
+
+#### 3. Enable multisite the 100% same way that Discourse does it. 
+
+This solution is a bit inconsistent. Because we need to be backwards compat, the defaults change a bit. If your file has properties, then the `multisite: true` is the default. If your file does not have properties, then `multisite: false` is assumed default.
+
+```YAML
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the Gem.
+#     The configuration is contained inside the 'multisite' property.
+#     Setting this to a value of `false` will disable the Gem.
+#     Setting this to a value of `true` will enable the Gem.
+#     Because this file has properties, `multisite: true` is the default.
+smyers.net:
+  adapter: postgresql
+  database: smyers_net
+  pool: 25
+  timeout: 5000
+  db_id: 1
+  host_names:
+    - smyers.net
+    - www.smyers.net
+coursescheduler.com:
+  adapter: postgresql
+  database: coursescheduler
+  pool: 25
+  timeout: 5000
+  db_id: 2
+  host_names:
+    - coursescheduler.com
+    - coursescheduler.net
+    - coursescheduler.org
+```
+
+#### 4. A full-featured example that supports defaults, database fallback, and caching.
+
+```yaml
+# @file: config/multisite.yml
+# @description: 
+#     This file defines the configuration for the rails_multisite plugin.
+#     This content demonstrates how to setup SQL-fallback for federation lookup.
+#     For brevity, all comments and discussion are removed.
+multisite: 
+  resolution_strategies: [local, database]
+  resolution_strategy_database: 
+    type: database
+    adapter: postgresql  
+    host: 123.123.123.123 
+    username: SOME_USERNAME
+    password: SOME_PASSWORD
+    database: federation
+    pool: 10
+    timeout: 1000
+  host_name_not_found_action: 'fail' 
+  cache_strategy:
+    cache_the_misses: true
+    cache_the_hits: true
+    overall_cache_limit: 1000
+    hit_cache_limit: 1000
+    miss_cache_limit: 10000
+site_defaults:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: all_my_sites
+  pool: 10
+  timeout: 1000
+smyers.net:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+   - www.smyers.net
+   - smyers.net
+coursescheduler.com:
+  adapter: postgresql      
+  host: 123.123.123.123 
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+   - coursescheduler.net
+   - coursescheduler.com
 ```
 
 
