@@ -7,8 +7,22 @@
 
 ## How to install
 
+Add this line to your application's Gemfile:
+
 ```Ruby
-gem install 'rails_multisite'
+gem 'rails_multisite'
+```
+
+And then execute:
+
+```Ruby
+$ bundle
+```
+
+Or install it yourself as:
+
+```Ruby
+$ gem install rails_multisite
 ```
 
 ## Description
