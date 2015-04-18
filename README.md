@@ -1,12 +1,15 @@
 # rails_multisite 0.1.0
 
-**Documentation Version:** 0.1.0
+**Gem Version:** 0.1.0\\
+**Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)\\
+**Contributor:** [Sam Saffron](https://meta.discourse.org/users/sam)\\
+**Date:** 4/17/2015\\
 
-**Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)
+## How to install
 
-**Contributor:** [Sam Saffron](https://meta.discourse.org/users/sam)
-
-**Date:** 4/17/2015
+```Ruby
+gem install 'rails_multisite'
+```
 
 ## Intention
 
