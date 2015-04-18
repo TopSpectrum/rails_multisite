@@ -16,13 +16,13 @@ gem 'rails_multisite'
 And then execute:
 
 ```Ruby
-bundle
+$ bundle
 ```
 
 Or install it yourself as:
 
 ```Ruby
-gem install rails_multisite
+$ gem install rails_multisite
 ```
 
 ## Description
