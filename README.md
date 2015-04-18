@@ -170,8 +170,9 @@ multisite:
   #    FAIL           : Throw an error. (set it to `fail` or false)
   host_name_not_found_action: 'site_defaults' 
   #
-  # Disable all caching with `cache_strategy: false`
-  #
+  # Want to disable all caching? Set `cache_strategy: false`
+  # Caching really only makes sense if you use a slow lookup strategy. The local YAML lookups never result in a 
+  # cache insertion. They are magical like that. All other non-'local' resolution_strategies use the same cache settings.
   cache_strategy:
     #
     # It's possible to cache misses so that if someone keeps hitting you with the same bad url OVER AND OVER again, 
