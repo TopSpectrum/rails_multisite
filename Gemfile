@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 group :test do
   gem 'rails'
-  gem 'rspec'
+  gem 'rspec', '2.99.0'
   gem 'activerecord'
   gem 'sqlite3'
 end
