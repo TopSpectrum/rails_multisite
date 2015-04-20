@@ -1,6 +1,6 @@
 # RailsMultisite
 
-**Gem Version:** 0.1.0  
+**Gem Version:** 1.0.0  
 **Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)  
 **Contributor:** [Sam Saffron](https://meta.discourse.org/users/sam)  
 **Date:** 4/17/2015  
