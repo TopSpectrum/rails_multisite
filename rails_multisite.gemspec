@@ -2,8 +2,8 @@
 require File.expand_path('../lib/rails_multisite/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Sam Saffron"]
-  gem.email         = ["sam.saffron@gmail.com"]
+  gem.authors       = ["Sam Saffron", "Michael Smyers"]
+  gem.email         = ["sam.saffron@gmail.com", "michael@topspectrum.com"]
   gem.description   = %q{Multi tenancy support for Rails}
   gem.summary       = %q{Multi tenancy support for Rails}
   gem.homepage      = ""
