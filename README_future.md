@@ -287,7 +287,7 @@ CREATE TABLE `federation`.`federation_host_names`
 );
 ```
 
-###### Walk me through the fetch logic for `Federation Mode`.
+###### Walk me through the fetch logic for `SQL fetching`.
 
 1. Someone comes to the site at `http://www.smyers.net/something/fancy` *(This is the first time that this site has been fetched.)*
 2. We execute this SQL *(with `host_name = www.smyers.net`)*
