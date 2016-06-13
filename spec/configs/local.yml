@@ -1,0 +1,26 @@
+multisite:
+  fallback: fail
+
+smyers.net:
+  adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+    - www.smyers.net
+    - smyers.net
+
+coursescheduler.com:
+  adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+    - coursescheduler.net
+    - coursescheduler.com

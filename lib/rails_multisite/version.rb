@@ -1,3 +1,4 @@
+# Gem version
 module RailsMultisite
-  VERSION = "0.1.0"
+  VERSION = '0.1.58.debug'
 end

@@ -1,20 +1,41 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/rails_multisite/version', __FILE__)
+# coding: utf-8
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["Sam Saffron", "Michael Smyers"]
-  gem.email         = ["sam.saffron@gmail.com", "michael@topspectrum.com"]
-  gem.description   = %q{Multi tenancy support for Rails}
-  gem.summary       = %q{Multi tenancy support for Rails}
-  gem.homepage      = ""
+lib = File.expand_path( '../lib', __FILE__ )
+$LOAD_PATH.unshift( lib ) unless $LOAD_PATH.include?( lib )
+require 'rails_multisite/version'
 
-  # when this is extracted comment it back in, prd has no .git 
-  # gem.files         = `git ls-files`.split($\)
-  gem.files         = Dir['README*','LICENSE','lib/**/*.rb']
+Gem::Specification.new do | spec |
 
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "rails_multisite"
-  gem.require_paths = ["lib"]
-  gem.version       = RailsMultisite::VERSION
+  spec.name          = 'rails_multisite'
+  spec.version       = RailsMultisite::VERSION
+  spec.authors       = [ 'Sam Saffron', 'Michael Smyers' ]
+  spec.email         = [ 'sam.saffron@gmail.com', 'michael@topspectrum.com' ]
+  spec.summary       = 'Multi tenancy support for Rails'
+  spec.description   = 'Multi tenancy support for Rails'
+  spec.homepage      = 'https://github.com/TopSpectrum/rails_multisite'
+  spec.license       = 'MIT'
+
+  spec.files         = Dir[
+    'lib/**/*',
+    'README.md',
+    'LICENSE.txt'
+  ]
+  spec.require_paths = [ 'lib' ]
+
+
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec-its'
+  spec.add_development_dependency 'database_cleaner'
+  spec.add_development_dependency 'factory_girl_rails'
+  spec.add_development_dependency 'combustion'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-rails'
+  spec.add_development_dependency 'pry-rescue'
+  spec.add_development_dependency 'pry-stack_explorer'
+  spec.add_development_dependency 'pry-nav'
+  spec.add_development_dependency 'sqlite3'
+
+  spec.add_dependency 'rails'
+  spec.add_dependency 'lru_redux'
+
 end

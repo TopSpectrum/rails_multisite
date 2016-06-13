@@ -1,0 +1,14 @@
+multisite:
+  fallback: 'fail'
+  lookup:
+    lookup:
+      adapter: sqlite3
+      database: tmp/lookup.test
+
+lookup:
+  adapter: sqlite3
+  database: tmp/lookup.test
+
+lookedup:
+  adapter: sqlite3
+  database: tmp/lookedup.test

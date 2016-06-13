@@ -1,38 +1,38 @@
 require 'rubygems'
+require 'bundler/setup'
+
+require 'rspec/its'
+
+require 'pry'
+require 'pry-rescue'
+require 'pry-stack_explorer'
+require 'pry-rails'
+
 require 'rails'
 require 'active_record'
+require 'active_support/core_ext/hash/compact'
+require 'rails_multisite'
+
+require 'sqlite3'
+
+require 'spec_support'
 
 
-ENV["RAILS_ENV"] ||= 'test'
-RSpec.configure do |config|
+ENV[ 'RAILS_ENV' ] ||= 'test'
 
-  require 'sqlite3'
-  class SQLite3::Database
-    def self.query_log
-      @@query_log ||= []
-    end
+SPECS_PATH = Pathname.new( __FILE__ ).dirname
 
-    alias_method :old_execute, :execute
-    alias_method :old_prepare, :prepare
+DEFAULT_HANDLER = ActiveRecord::Base.connection_handler
 
-    def execute(*args,&blk)
-      self.class.query_log << [args, caller, Thread.current.object_id]
-      old_execute(*args,&blk)
-    end
 
-    def prepare(*args,&blk)
-      self.class.query_log << [args, caller, Thread.current.object_id]
-      old_prepare(*args,&blk)
-    end
+RSpec.configure do | config |
 
-  end
+  config.before :suite do
 
-  config.color_enabled = true
+    databases = YAML::load File.open 'spec/fixtures/database.yml'
 
-  config.before(:suite) do
-    ActiveRecord::Base.configurations['test'] = (YAML::load(File.open("spec/fixtures/database.yml"))['test'])
+    ActiveRecord::Base.configurations[ 'test' ] = databases[ 'test' ]
+
   end
 
 end
-
-

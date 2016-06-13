@@ -1,0 +1,41 @@
+multisite:
+  lookup:
+    just_name:
+      adapter: postgresql
+      host: 123.123.123.123
+      username: SOME_USERNAME
+      password: SOME_PASSWORD
+      database: federation
+      pool: 10
+      timeout: 1000
+  cache:
+    size: 100
+    expires: 102039
+
+# This is a human readable name.
+# It is not special to the Gem, other than it must be unique and a non-reserved word.
+smyers.net:
+  adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+    - www.smyers.net
+    - smyers.net
+
+# This is a human readable name.
+# It is not special to the Gem, other than it must be unique and a non-reserved word.
+coursescheduler.com:
+  adapter: postgresql
+  host: 123.123.123.123
+  username: SOME_USERNAME
+  password: SOME_PASSWORD
+  database: smyers_net
+  pool: 10
+  timeout: 1000
+  host_names:
+    - coursescheduler.net
+    - coursescheduler.com

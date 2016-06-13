@@ -1,4 +1,4 @@
-# RailsMultisite
+I# RailsMultisite
 
 **Gem Version:** 0.1.0  
 **Author:** [Michael Smyers](https://meta.discourse.org/users/msmyers)  
@@ -9,19 +9,19 @@
 
 Add this line to your application's Gemfile:
 
-```Ruby
+```ruby
 gem 'rails_multisite'
 ```
 
 And then execute:
 
-```Ruby
+```ruby
 $ bundle
 ```
 
 Or install it yourself as:
 
-```Ruby
+```ruby
 $ gem install rails_multisite
 ```
 
@@ -49,7 +49,7 @@ You must enable it by creating the file `config/multisite.yml` and setting `mult
 
 Alternatively, you can have the `config/multisite.yml` file present, but disable it via `multisite: false`.
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.
@@ -234,18 +234,18 @@ multisite:
     #
     # Because it's type:database, all of the properties found in `site_defaults` also work here.
     #
-    ... 
-  
+    ...
+
 site_defaults:
-  ... 
-  
+  ...
+
 smyers.net:
   ...
-  
-coursescheduler.com:
-  ... 
 
-  
+coursescheduler.com:
+  ...
+
+
 ...
 ```
 
@@ -291,7 +291,7 @@ CREATE TABLE `federation`.`federation_host_names`
 
 1. Someone comes to the site at `http://www.smyers.net/something/fancy` *(This is the first time that this site has been fetched.)*
 2. We execute this SQL *(with `host_name = www.smyers.net`)*
-```SQL
+```sql
 SELECT federation_databases.*,federation_host_names.database FROM federation_databases
   INNER JOIN federation_host_names ON federation_databases.id = federation_host_names.federation_database_id
   WHERE host_name = ?
@@ -305,7 +305,7 @@ SELECT federation_databases.*,federation_host_names.database FROM federation_dat
 
 #### 1. Environment aware config
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the rails_multisite plugin.
@@ -330,7 +330,7 @@ production:
 
 **Option 2:** Have an empty file.
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.
@@ -341,7 +341,7 @@ production:
 
 **Option 3:** Explicitly disable it.
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.
@@ -355,7 +355,7 @@ multisite: false
 
 This solution is a bit inconsistent. Because we need to be backwards compat, the defaults change a bit. If your file has properties, then the `multisite: true` is the default. If your file does not have properties, then `multisite: false` is assumed default.
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.

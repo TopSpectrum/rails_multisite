@@ -25,19 +25,19 @@
 
 Add this line to your application's Gemfile:
 
-```Ruby
+```ruby
 gem 'rails_multisite'
 ```
 
 And then execute:
 
-```Ruby
+```ruby
 $ bundle
 ```
 
 Or install it yourself as:
 
-```Ruby
+```ruby
 $ gem install rails_multisite
 ```
 
@@ -66,7 +66,7 @@ You must activate it by creating the file `config/multisite.yml` and inserting t
 
 ##### Inactive
 
-```YAML
+```yaml
 # @file: config/multisite.yml
 # @description: 
 #     This file defines the configuration for the Gem.
